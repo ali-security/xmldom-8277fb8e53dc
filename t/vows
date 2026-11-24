@@ -47,6 +47,7 @@ SUITES="
 test/dom/attr.js
 test/dom/cdata-section.js
 test/dom/clone.js
+test/dom/deep-tree.js
 test/dom/document.js
 test/dom/element.js
 test/dom/fragment.js

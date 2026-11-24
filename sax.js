@@ -256,6 +256,15 @@ function parseElementStartPart(source,start,el,currentNSMap,entityReplacer,error
 	var s = S_TAG;//status
 	while(true){
 		var c = source.charAt(p);
+		if(s === S_TAG && c === '<'){
+			// A '<' can never occur inside a tag name. Without this guard the scan runs on to the next
+			// '>' (or the end of input) before the tag name is rejected, so a document with many '<'
+			// inside a malformed tag makes each one-character recovery step of parse() re-scan to the
+			// distant '>' -- O(n^2). Stopping at the '<' keeps each recovery step bounded. The candidate
+			// scanned so far is reported raw, consistent with the 'invalid tagName' error of setTagName.
+			// https://github.com/xmldom/xmldom/security/advisories/GHSA-93r5-fhx6-vmg9
+			throw new Error('unexpected < in tag name: '+source.slice(start,p));
+		}
 		switch(c){
 		case '=':
 			if(s === S_ATTR){//attrName

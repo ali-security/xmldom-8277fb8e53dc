@@ -22,6 +22,13 @@ function StubDOMHandler(throwingMethod, ErrorClass) {
 	}.bind(this));
 	if (throwingMethod) {
 		this[throwingMethod] = function () {
+			if (throwingMethod === 'endCDATA') {
+				// leave the CDATA section before throwing, like DOMHandler does:
+				// otherwise the error recovery keeps reporting the following
+				// characters (including the raw "]]>") as CDATA data, which
+				// createCDATASection rejects (CVE-2026-34601)
+				DOMHandler.prototype.endCDATA.apply(this, arguments);
+			}
 			throw new ErrorClass('StubDOMHandler throwing in ' + throwingMethod);
 		};
 	}

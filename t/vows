@@ -45,6 +45,7 @@ node -e "require('xmldom'); require('vows')"
 
 SUITES="
 test/dom/attr.js
+test/dom/cdata-section.js
 test/dom/clone.js
 test/dom/document.js
 test/dom/element.js
